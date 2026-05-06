@@ -39,7 +39,7 @@ export default async function CommunityAgentsPage({
     .select("id, agent_id, agents(id, name, description)")
     .eq("community_id", id);
 
-  const typedDeployed: DeployedAgent[] = (deployed ?? []) as DeployedAgent[];
+  const typedDeployed: DeployedAgent[] = (deployed ?? []) as unknown as DeployedAgent[];
   const deployedAgentIds = new Set(typedDeployed.map((d) => d.agent_id));
 
   const { data: myAgents } = await supabase

@@ -45,7 +45,7 @@ export default async function AgentDetailPage({
     .select("community_id, communities(id, name)")
     .eq("agent_id", id);
 
-  const typedDeployments = (deployments ?? []) as {
+  const typedDeployments = (deployments ?? []) as unknown as {
     community_id: string;
     communities: { id: string; name: string } | null;
   }[];

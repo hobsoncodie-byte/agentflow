@@ -134,7 +134,7 @@ export default async function CommunityPage({
     .select("agent_id, agents(id, name)")
     .eq("community_id", id);
 
-  const typedDeployedAgents = (deployedAgents ?? []) as {
+  const typedDeployedAgents = (deployedAgents ?? []) as unknown as {
     agent_id: string;
     agents: { id: string; name: string } | null;
   }[];

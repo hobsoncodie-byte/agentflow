@@ -51,7 +51,8 @@ export async function POST(request: NextRequest) {
     return new Response("Agent not deployed in this community", { status: 403 });
   }
 
-  const agentData = session.agents as { system_prompt: string; name: string } | null;
+  const agentsRaw = session.agents as unknown;
+  const agentData = (Array.isArray(agentsRaw) ? agentsRaw[0] : agentsRaw) as { system_prompt: string; name: string } | null;
   const systemPrompt = agentData?.system_prompt ?? "You are a helpful assistant.";
 
   const { data: history } = await supabase

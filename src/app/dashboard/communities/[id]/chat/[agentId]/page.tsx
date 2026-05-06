@@ -42,7 +42,8 @@ export default async function CommunityAgentChatPage({
 
   if (!deployment) notFound();
 
-  const agentData = deployment.agents as {
+  const agentsRaw = deployment.agents as unknown;
+  const agentData = (Array.isArray(agentsRaw) ? agentsRaw[0] : agentsRaw) as {
     id: string;
     name: string;
     description: string | null;
