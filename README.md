@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flownz
 
-## Getting Started
+A private-community platform where every community can have its own deployable AI assistant. Members create private or public spaces, post updates, manage roles — and can chat with a custom AI agent (its own name, description, and system prompt) that the community owner configures and deploys.
 
-First, run the development server:
+## Stack
+
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · Supabase (auth + Postgres) · Groq (`llama-3.1-8b-instant`) for AI chat.
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # fill in your Supabase + Groq credentials
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+See `.env.example` for the required environment variables and where each one is used.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev      # start dev server
+npm run build    # production build
+npm run lint     # run ESLint
+```
 
-## Learn More
+No automated test suite is configured yet.
 
-To learn more about Next.js, take a look at the following resources:
+## Architecture
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Auth & route protection** — `src/proxy.ts` (Next.js middleware) guards `/dashboard/**` and `/communities/**`, redirecting unauthenticated users to `/login`. Two Supabase client factories exist — `@/lib/supabase/server` for Server Components/Actions, `@/lib/supabase/client` for Client Components. Use the correct one; mixing them up breaks the session.
+- **Data access** — Server Components query Supabase directly, no API layer. Server Actions (`"use server"`, inline in page files) handle mutations and call `revalidatePath`/`redirect` after.
+- **AI chat** — `src/app/api/chat/route.ts` streams responses from Groq, persisting messages via the service-role Supabase client (`src/lib/supabase/service.ts`), which bypasses RLS — treat any change to that route with care.
+- **Styling** — public pages (`/`, `/login`, `/signup`) use a dark `slate-950` theme; the dashboard uses a light `slate-50` theme. `cn()` from `@/lib/utils` merges Tailwind classes.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Known gaps (as of this writing)
 
-## Deploy on Vercel
+These are worth knowing before treating this as production-ready:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **No version-controlled database schema.** The `communities`, `agents`, `chat_sessions`, `chat_messages`, `community_agents`, and membership/invite tables only exist live in the Supabase project — nothing here can rebuild them from scratch.
+- **Row Level Security status is unverified from the codebase.** The app enforces ownership checks in application code; whether RLS policies also enforce this at the database level needs confirming directly in the Supabase dashboard (Authentication → Policies).
+- **No billing.** No Stripe or other payment integration exists yet.
+- **No rate limiting on AI chat.** `/api/chat` has no per-user quota — a single shared Groq API key currently has no usage guardrails.
+- **No automated tests, no error monitoring.**
