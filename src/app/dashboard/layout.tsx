@@ -57,13 +57,13 @@ export default async function DashboardLayout({
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="hidden w-[290px] shrink-0 border-r border-slate-200/80 bg-white/70 px-6 py-6 backdrop-blur xl:flex xl:flex-col">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white shadow-sm">
-              AF
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-violet-500 text-sm font-semibold text-slate-950 shadow-sm">
+              FZ
             </div>
             <div>
               <div className="text-sm font-medium text-slate-500">Workspace</div>
               <div className="text-xl font-semibold tracking-tight">
-                AgentFlow
+                Flownz
               </div>
             </div>
           </div>
@@ -147,12 +147,12 @@ export default async function DashboardLayout({
           <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/75 backdrop-blur">
             <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white shadow-sm xl:hidden">
-                  AF
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-violet-500 text-sm font-semibold text-slate-950 shadow-sm xl:hidden">
+                  FZ
                 </div>
                 <div className="min-w-0">
                   <div className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-                    AgentFlow Dashboard
+                    Flownz Dashboard
                   </div>
                   <div className="truncate text-lg font-semibold tracking-tight text-slate-950">
                     Build your private community product

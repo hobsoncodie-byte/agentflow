@@ -46,7 +46,7 @@ export default function SignupPage() {
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl">
         <h1 className="text-3xl font-bold text-center">Create account</h1>
         <p className="mt-2 text-center text-white/70">
-          Start building with AgentFlow
+          Start building with Flownz
         </p>
 
         <form onSubmit={handleSignup} className="mt-8 space-y-4">

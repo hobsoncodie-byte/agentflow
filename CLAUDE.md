@@ -24,7 +24,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 
 ## Architecture
 
-**AgentFlow** is a community management platform built on Next.js App Router, React 19, TypeScript, Tailwind CSS v4, and Supabase (auth + Postgres).
+**Flownz** is a community management platform built on Next.js App Router, React 19, TypeScript, Tailwind CSS v4, and Supabase (auth + Postgres).
 
 ### Auth & Middleware
 

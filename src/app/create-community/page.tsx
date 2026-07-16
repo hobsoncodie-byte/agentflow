@@ -85,7 +85,7 @@ export default function CreateCommunityPage() {
           <div>
             <h1 className="text-4xl font-bold">Create Community</h1>
             <p className="mt-2 text-white/70">
-              Set up a new community in your AgentFlow app.
+              Set up a new community in your Flownz app.
             </p>
           </div>
 
@@ -105,7 +105,7 @@ export default function CreateCommunityPage() {
               </label>
               <input
                 type="text"
-                placeholder="e.g. AgentFlow Founders"
+                placeholder="e.g. Flownz Founders"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required

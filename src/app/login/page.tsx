@@ -55,7 +55,7 @@ function LoginForm() {
       </h1>
 
       <p style={{ color: "#cbd5e1", marginBottom: "24px" }}>
-        Sign in to access your AgentFlow dashboard.
+        Sign in to access your Flownz dashboard.
       </p>
 
       {(error || urlError) && (
