@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { AuthShell } from "@/components/AuthShell";
 
 function LoginForm() {
   const router = useRouter();
@@ -40,118 +41,61 @@ function LoginForm() {
   }
 
   return (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: "420px",
-        background: "#111827",
-        border: "1px solid #334155",
-        borderRadius: "20px",
-        padding: "32px",
-      }}
-    >
-      <h1 style={{ fontSize: "32px", fontWeight: 700, marginBottom: "8px" }}>
-        Login
-      </h1>
-
-      <p style={{ color: "#cbd5e1", marginBottom: "24px" }}>
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur">
+      <h1 className="text-3xl font-bold text-center">Login</h1>
+      <p className="mt-2 text-center text-white/70">
         Sign in to access your Flownz dashboard.
       </p>
 
       {(error || urlError) && (
-        <div
-          style={{
-            marginBottom: "16px",
-            padding: "12px 14px",
-            borderRadius: "12px",
-            background: "#3f1d1d",
-            border: "1px solid #7f1d1d",
-            color: "#fecaca",
-          }}
-        >
+        <div className="mt-4 rounded-xl border border-red-900 bg-red-950/60 px-4 py-3 text-sm text-red-300">
           {error || urlError}
         </div>
       )}
 
       {urlMessage && (
-        <div
-          style={{
-            marginBottom: "16px",
-            padding: "12px 14px",
-            borderRadius: "12px",
-            background: "#132b1d",
-            border: "1px solid #166534",
-            color: "#bbf7d0",
-          }}
-        >
+        <div className="mt-4 rounded-xl border border-emerald-900 bg-emerald-950/60 px-4 py-3 text-sm text-emerald-300">
           {urlMessage}
         </div>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-      >
+      <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div>
-          <label style={{ display: "block", marginBottom: "8px" }}>Email</label>
+          <label className="mb-2 block text-sm text-white/80">Email</label>
           <input
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="you@example.com"
             required
-            style={{
-              width: "100%",
-              padding: "14px",
-              borderRadius: "12px",
-              border: "1px solid #475569",
-              background: "#0b1220",
-              color: "#ffffff",
-            }}
+            className="w-full rounded-xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-cyan-400/50"
           />
         </div>
 
         <div>
-          <label style={{ display: "block", marginBottom: "8px" }}>Password</label>
+          <label className="mb-2 block text-sm text-white/80">Password</label>
           <input
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Enter your password"
             required
-            style={{
-              width: "100%",
-              padding: "14px",
-              borderRadius: "12px",
-              border: "1px solid #475569",
-              background: "#0b1220",
-              color: "#ffffff",
-            }}
+            className="w-full rounded-xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-cyan-400/50"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          style={{
-            marginTop: "8px",
-            background: "#ffffff",
-            color: "#0f172a",
-            border: "none",
-            borderRadius: "12px",
-            padding: "14px 24px",
-            fontWeight: 700,
-            cursor: loading ? "not-allowed" : "pointer",
-            opacity: loading ? 0.7 : 1,
-          }}
+          className="mt-2 w-full rounded-xl bg-white px-4 py-3 font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
       </form>
 
-      <p style={{ marginTop: "20px", color: "#cbd5e1" }}>
+      <p className="mt-6 text-center text-sm text-white/70">
         No account yet?{" "}
-        <Link href="/signup" style={{ color: "#ffffff" }}>
+        <Link href="/signup" className="font-medium text-white underline">
           Create one
         </Link>
       </p>
@@ -161,20 +105,10 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "#0f172a",
-        color: "#ffffff",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-      }}
-    >
+    <AuthShell>
       <Suspense>
         <LoginForm />
       </Suspense>
-    </main>
+    </AuthShell>
   );
 }
