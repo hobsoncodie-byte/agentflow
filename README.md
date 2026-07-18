@@ -38,7 +38,7 @@ No automated test suite is configured yet.
 These are worth knowing before treating this as production-ready:
 
 - **No version-controlled database schema.** The `communities`, `agents`, `chat_sessions`, `chat_messages`, `community_agents`, and membership/invite tables only exist live in the Supabase project — nothing here can rebuild them from scratch.
-- **Row Level Security status is unverified from the codebase.** The app enforces ownership checks in application code; whether RLS policies also enforce this at the database level needs confirming directly in the Supabase dashboard (Authentication → Policies).
+- **Public communities aren't actually discoverable.** RLS on `communities` only allows `SELECT` for the owner or an existing member — there's no clause for `is_private = false`, so the "browse public communities" page can't surface communities a user hasn't already joined. (Verified 2026-07-18: RLS is enabled on all 8 tables with correctly `auth.uid()`-scoped policies otherwise — this is a functional gap, not a security hole.)
 - **No billing.** No Stripe or other payment integration exists yet.
 - **No rate limiting on AI chat.** `/api/chat` has no per-user quota — a single shared Groq API key currently has no usage guardrails.
 - **No automated tests, no error monitoring.**
