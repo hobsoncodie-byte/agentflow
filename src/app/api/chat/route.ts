@@ -11,6 +11,9 @@ const bodySchema = z.object({
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
+const RATE_LIMIT_MESSAGES = 40;
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
 
@@ -20,6 +23,22 @@ export async function POST(request: NextRequest) {
 
   if (!user) {
     return new Response("Unauthorized", { status: 401 });
+  }
+
+  const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
+
+  const { count: recentMessageCount, error: rateLimitError } = await supabase
+    .from("chat_messages")
+    .select("id, chat_sessions!inner(user_id)", { count: "exact", head: true })
+    .eq("chat_sessions.user_id", user.id)
+    .eq("role", "user")
+    .gte("created_at", windowStart);
+
+  if (!rateLimitError && (recentMessageCount ?? 0) >= RATE_LIMIT_MESSAGES) {
+    return new Response(
+      "You've sent a lot of messages recently. Please wait a bit before sending more.",
+      { status: 429 }
+    );
   }
 
   const parsed = bodySchema.safeParse(await request.json());
