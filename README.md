@@ -33,12 +33,17 @@ No automated test suite is configured yet.
 - **AI chat** — `src/app/api/chat/route.ts` streams responses from Groq, persisting messages via the service-role Supabase client (`src/lib/supabase/service.ts`), which bypasses RLS — treat any change to that route with care.
 - **Styling** — public pages (`/`, `/login`, `/signup`) use a dark `slate-950` theme; the dashboard uses a light `slate-50` theme. `cn()` from `@/lib/utils` merges Tailwind classes.
 
+## Database migrations
+
+`supabase/migrations/` tracks schema/policy changes going forward, applied via the Supabase SQL Editor (no Supabase CLI project link is set up yet). The bulk of the existing schema predates this and still only exists live in the Supabase project — see known gaps below.
+
 ## Known gaps (as of this writing)
 
 These are worth knowing before treating this as production-ready:
 
-- **No version-controlled database schema.** The `communities`, `agents`, `chat_sessions`, `chat_messages`, `community_agents`, and membership/invite tables only exist live in the Supabase project — nothing here can rebuild them from scratch.
-- **Public communities aren't actually discoverable.** RLS on `communities` only allows `SELECT` for the owner or an existing member — there's no clause for `is_private = false`, so the "browse public communities" page can't surface communities a user hasn't already joined. (Verified 2026-07-18: RLS is enabled on all 8 tables with correctly `auth.uid()`-scoped policies otherwise — this is a functional gap, not a security hole.)
+- **Most of the database schema still isn't version-controlled.** Only changes made from 2026-07-18 onward are tracked in `supabase/migrations/`. The original `communities`, `agents`, `chat_sessions`, `chat_messages`, `community_agents`, and membership/invite tables predate that and still only exist live in the Supabase project.
 - **No billing.** No Stripe or other payment integration exists yet.
 - **No rate limiting on AI chat.** `/api/chat` has no per-user quota — a single shared Groq API key currently has no usage guardrails.
 - **No automated tests, no error monitoring.**
+
+RLS was fully audited on 2026-07-18: enabled on all 8 tables, every policy correctly scoped to `auth.uid()` (including via `can_manage_community`/`is_community_member`, both of which properly include the community owner). The one gap found (communities marked public weren't actually visible to non-members) is fixed in `supabase/migrations/20260718000000_communities_public_select.sql`.
