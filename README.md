@@ -30,20 +30,22 @@ No automated test suite is configured yet.
 
 - **Auth & route protection** — `src/proxy.ts` (Next.js middleware) guards `/dashboard/**` and `/communities/**`, redirecting unauthenticated users to `/login`. Two Supabase client factories exist — `@/lib/supabase/server` for Server Components/Actions, `@/lib/supabase/client` for Client Components. Use the correct one; mixing them up breaks the session.
 - **Data access** — Server Components query Supabase directly, no API layer. Server Actions (`"use server"`, inline in page files) handle mutations and call `revalidatePath`/`redirect` after.
-- **AI chat** — `src/app/api/chat/route.ts` streams responses from Groq, persisting messages via the service-role Supabase client (`src/lib/supabase/service.ts`), which bypasses RLS — treat any change to that route with care.
+- **AI chat** — `src/app/api/chat/route.ts` streams responses from Groq, persisting messages via the service-role Supabase client (`src/lib/supabase/service.ts`), which bypasses RLS — treat any change to that route with care. Capped at 40 messages/user/hour, checked against `chat_messages` directly (DB-backed since this runs as serverless functions, not a single long-lived process — an in-memory counter wouldn't hold up).
 - **Styling** — public pages (`/`, `/login`, `/signup`) use a dark `slate-950` theme; the dashboard uses a light `slate-50` theme. `cn()` from `@/lib/utils` merges Tailwind classes.
 
-## Database migrations
+## Database schema and migrations
 
-`supabase/migrations/` tracks schema/policy changes going forward, applied via the Supabase SQL Editor (no Supabase CLI project link is set up yet). The bulk of the existing schema predates this and still only exists live in the Supabase project — see known gaps below.
+The full schema is captured in `supabase/migrations/`:
+- `00000000000000_baseline.sql` — a complete `pg_dump --schema-only` snapshot of the live project as of 2026-07-18 (7 tables, all constraints/indexes/foreign keys/RLS policies).
+- Later-dated files are incremental changes applied after that point.
+
+There's no Supabase CLI project link committed here (`supabase link` was done locally, not checked in) — apply new migrations either through the Supabase SQL Editor directly, or re-link locally with `npx supabase link --project-ref hownotwgfjugcuouyoby` first.
+
+`communities` has both a `visibility` text column and a separate `is_private` boolean representing the same fact — a pre-existing redundancy in the schema, not something introduced by tracking it. Both are kept in sync by the app today; worth consolidating to one eventually.
 
 ## Known gaps (as of this writing)
 
-These are worth knowing before treating this as production-ready:
-
-- **Most of the database schema still isn't version-controlled.** Only changes made from 2026-07-18 onward are tracked in `supabase/migrations/`. The original `communities`, `agents`, `chat_sessions`, `chat_messages`, `community_agents`, and membership/invite tables predate that and still only exist live in the Supabase project.
 - **No billing.** No Stripe or other payment integration exists yet.
-- **No rate limiting on AI chat.** `/api/chat` has no per-user quota — a single shared Groq API key currently has no usage guardrails.
 - **No automated tests, no error monitoring.**
 
 RLS was fully audited on 2026-07-18: enabled on all 8 tables, every policy correctly scoped to `auth.uid()` (including via `can_manage_community`/`is_community_member`, both of which properly include the community owner). The one gap found (communities marked public weren't actually visible to non-members) is fixed in `supabase/migrations/20260718000000_communities_public_select.sql`.
