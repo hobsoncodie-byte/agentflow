@@ -51,19 +51,23 @@ export default async function DashboardLayout({
   const email = user.email ?? "your account";
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-950">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(15,23,42,0.06),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(59,130,246,0.05),_transparent_28%),linear-gradient(to_bottom,_#f8fafc,_#f1f5f9)]" />
+    <div className="relative min-h-screen bg-slate-50 text-slate-950">
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,23,42,0.06),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(59,130,246,0.05),_transparent_28%),linear-gradient(to_bottom,_#f8fafc,_#f1f5f9)]" />
+        <div className="animate-flow-a absolute -left-40 -top-40 h-[30rem] w-[30rem] rounded-full bg-cyan-300/25 blur-3xl" />
+        <div className="animate-flow-b absolute -right-40 top-1/3 h-[26rem] w-[26rem] rounded-full bg-violet-300/20 blur-3xl" />
+      </div>
 
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="hidden w-[290px] shrink-0 border-r border-slate-200/80 bg-white/70 px-6 py-6 backdrop-blur xl:flex xl:flex-col">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white shadow-sm">
-              AF
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-violet-500 text-sm font-semibold text-slate-950 shadow-sm">
+              FZ
             </div>
             <div>
               <div className="text-sm font-medium text-slate-500">Workspace</div>
               <div className="text-xl font-semibold tracking-tight">
-                AgentFlow
+                Flownz
               </div>
             </div>
           </div>
@@ -85,7 +89,7 @@ export default async function DashboardLayout({
               <Link
                 key={item.href}
                 href={item.href}
-                className="group block rounded-2xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+                className="group block rounded-2xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-cyan-400/50 hover:shadow-[0_0_30px_-15px_rgba(34,211,238,0.4)]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -145,14 +149,15 @@ export default async function DashboardLayout({
 
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/75 backdrop-blur">
+            <div className="h-px bg-gradient-to-r from-cyan-400/0 via-cyan-400/50 to-violet-400/0" />
             <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white shadow-sm xl:hidden">
-                  AF
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-violet-500 text-sm font-semibold text-slate-950 shadow-sm xl:hidden">
+                  FZ
                 </div>
                 <div className="min-w-0">
                   <div className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-                    AgentFlow Dashboard
+                    Flownz Dashboard
                   </div>
                   <div className="truncate text-lg font-semibold tracking-tight text-slate-950">
                     Build your private community product
