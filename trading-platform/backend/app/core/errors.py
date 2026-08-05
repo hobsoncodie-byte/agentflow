@@ -21,3 +21,7 @@ class ConfigNotFoundError(TradingPlatformError):
 
 class StaleConfigVersionError(TradingPlatformError):
     """A config write was attempted against an outdated version (optimistic lock)."""
+
+
+class InstrumentNotFoundError(TradingPlatformError):
+    """No active instrument matches the requested symbol."""

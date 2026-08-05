@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     log_format: Literal["json", "console"] = "json"
     session_enforce_window: bool = True
+    # No real market data vendor is selected yet (KNOWN_ISSUES.md #1); this
+    # points at CSV fixtures for the CsvReplayMarketDataProvider.
+    market_data_replay_dir: str = "data/replay"
 
 
 @lru_cache

@@ -17,7 +17,15 @@ _SessionLocal = sessionmaker(bind=_engine)
 # Repository code under test calls session.commit() itself, which rules out the
 # usual SAVEPOINT-rollback isolation trick without extra event-listener plumbing.
 # Truncating after each test is simpler and just as safe for this table set.
-_TEST_TABLES = ("config_versions", "instruments", "sessions", "error_log", "notifications_log")
+# Order matters: candles has an FK to instruments, so it must be cleared first.
+_TEST_TABLES = (
+    "candles",
+    "config_versions",
+    "instruments",
+    "sessions",
+    "error_log",
+    "notifications_log",
+)
 
 
 @pytest.fixture
