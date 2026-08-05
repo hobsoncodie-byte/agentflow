@@ -87,8 +87,7 @@ trading-platform/
 │   │   │   │   ├── services/            # use cases (ingest bar, backfill history)
 │   │   │   │   ├── adapters/            # vendor-specific implementations of ports
 │   │   │   │   ├── repositories/        # persistence implementations
-│   │   │   │   ├── api/                 # FastAPI routers for this module
-│   │   │   │   └── tests/
+│   │   │   │   └── api/                 # FastAPI routers for this module
 │   │   │   ├── indicators/            (same internal shape)
 │   │   │   ├── ict_analysis/          (same internal shape)
 │   │   │   ├── ai_analysis/           (same internal shape)
@@ -113,7 +112,7 @@ trading-platform/
 │   │       ├── scheduler.py             # session-window aware scheduler
 │   │       ├── ingestion_worker.py      # continuous market data ingestion
 │   │       └── research_worker.py       # off-hours Continuous Research Engine job
-│   └── tests/
+│   └── tests/                            # organized by pyramid layer (TESTING.md §1), not per-module
 │       ├── unit/
 │       ├── integration/
 │       └── fixtures/
