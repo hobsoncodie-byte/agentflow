@@ -22,6 +22,17 @@ class Settings(BaseSettings):
     # No real market data vendor is selected yet (KNOWN_ISSUES.md #1); this
     # points at CSV fixtures for the CsvReplayMarketDataProvider.
     market_data_replay_dir: str = "data/replay"
+    # Data vendor selected: Interactive Brokers (KNOWN_ISSUES.md #1). "replay"
+    # stays the default so existing dev/test flows are unaffected until this
+    # is explicitly turned on for an environment with a real TWS/IB Gateway.
+    market_data_provider: Literal["replay", "interactive_brokers"] = "replay"
+    # TWS API connects to an already-running, already-logged-in TWS/IB Gateway
+    # process on localhost — there is no API key/secret in this protocol, so
+    # these defaults are not credentials. 7497 is TWS's default paper-trading
+    # socket port; 4002 is IB Gateway's paper port, 7496/4001 are live.
+    ib_host: str = "127.0.0.1"
+    ib_port: int = 7497
+    ib_client_id: int = 1
 
 
 @lru_cache

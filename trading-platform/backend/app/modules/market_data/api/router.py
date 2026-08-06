@@ -3,7 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, field_validator
 from sqlalchemy.orm import Session
 
@@ -13,7 +13,11 @@ from app.core.events import EventBus
 from app.core.types import Symbol
 from app.db.base import get_session
 from app.modules.market_data.adapters.csv_replay_provider import CsvReplayMarketDataProvider
+from app.modules.market_data.adapters.interactive_brokers_provider import (
+    InteractiveBrokersMarketDataProvider,
+)
 from app.modules.market_data.domain.models import Candle, DataIntegrityReport
+from app.modules.market_data.domain.ports import MarketDataProvider
 from app.modules.market_data.repositories.candle_repository import SqlAlchemyCandleRepository
 from app.modules.market_data.repositories.instrument_lookup import SqlAlchemyInstrumentLookup
 from app.modules.market_data.services.data_integrity_service import DataIntegrityService
@@ -26,11 +30,25 @@ router = APIRouter(prefix="/api/v1/market-data", tags=["market-data"])
 _event_bus = EventBus()
 
 
+def _build_provider(request: Request, settings: Settings) -> MarketDataProvider:
+    if settings.market_data_provider == "interactive_brokers":
+        ib = getattr(request.app.state, "ib", None)
+        if ib is None:
+            raise RuntimeError(
+                "market_data_provider=interactive_brokers but no IB connection was "
+                "established at startup — check ib_host/ib_port/ib_client_id and that "
+                "TWS/IB Gateway is running (see app.main's lifespan hook)"
+            )
+        return InteractiveBrokersMarketDataProvider(ib)
+    return CsvReplayMarketDataProvider(Path(settings.market_data_replay_dir))
+
+
 def get_market_data_service(
+    request: Request,
     session: Session = Depends(get_session),
     settings: Settings = Depends(get_settings),
 ) -> MarketDataService:
-    provider = CsvReplayMarketDataProvider(Path(settings.market_data_replay_dir))
+    provider = _build_provider(request, settings)
     repository = SqlAlchemyCandleRepository(session)
     instruments = SqlAlchemyInstrumentLookup(session)
     return MarketDataService(provider, repository, instruments, events=_event_bus)
